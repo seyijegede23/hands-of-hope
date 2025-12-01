@@ -78,7 +78,7 @@ const GetInvolved = () => {
     
     try {
       // Send to backend
-      const response = await fetch("http://localhost:3000/apply-volunteer", {
+      const response = await fetch("https://heartofhopeserver1.onrender.com/apply-volunteer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

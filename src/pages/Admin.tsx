@@ -43,7 +43,7 @@ const Admin = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -59,7 +59,7 @@ const Admin = () => {
   };
 
   const fetchData = async () => {
-    const res = await fetch("http://localhost:3000/admin/data", { method: "POST" });
+    const res = await fetch("https://heartofhopeserver1.onrender.com/admin/data", { method: "POST" });
     const data = await res.json();
     setVolunteers(data.volunteers);
     setMessages(data.messages);
@@ -73,7 +73,7 @@ const Admin = () => {
     e.preventDefault();
     setIsSending(true);
     try {
-      const res = await fetch("http://localhost:3000/admin/request-broadcast-otp", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/admin/request-broadcast-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentUser, subject: newsSubject }),
@@ -89,7 +89,7 @@ const Admin = () => {
     if (!window.confirm("Send to ALL subscribers?")) return;
     setIsSending(true);
     try {
-      const res = await fetch("http://localhost:3000/send-newsletter", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/send-newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentUser, subject: newsSubject, message: newsMessage, otp }),
@@ -107,7 +107,7 @@ const Admin = () => {
   const handleAddAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/admin/add-user", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/admin/add-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentUser, newUsername: newUser.username, newEmail: newUser.email, newPassword: newUser.password }),
@@ -122,7 +122,7 @@ const Admin = () => {
   const handleDeleteAdmin = async (id: string) => {
     if(!window.confirm("Delete User?")) return;
     try {
-      const res = await fetch("http://localhost:3000/admin/delete-user", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/admin/delete-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentUser, targetId: id }),
@@ -136,7 +136,7 @@ const Admin = () => {
   const requestReset = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/auth/forgot-password", { 
+      const res = await fetch("https://heartofhopeserver1.onrender.com/auth/forgot-password", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier: recoveryInput }) 
@@ -150,7 +150,7 @@ const Admin = () => {
   const confirmReset = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/auth/reset-password", {
+      const res = await fetch("https://heartofhopeserver1.onrender.com/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: resetCode, newPassword }),
