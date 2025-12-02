@@ -42,7 +42,7 @@ const Donate = () => {
 
     try {
       // Call the backend server
-      const response = await fetch("https://heartofhopeserver1.onrender.com/create-checkout-session", {
+      const response = await fetch("https://heartofhopeserver1.vercel.app/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
