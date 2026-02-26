@@ -16,7 +16,7 @@ const Footer = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://heartofhopeserver1.onrender.com/subscribe", {
+      const response = await fetch("https://heartofhopeserver1.vercel.app//subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
