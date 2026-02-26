@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react"; // Added FormEvent here
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Users, Mail, Lock, LayoutDashboard, Send, LogOut, ArrowLeft, UserPlus, Shield, Copy, Trash2, ShieldAlert, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+
+// Defined types to fix the "Property does not exist" errors
+type Volunteer = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  skills: string;
+  availability: string; // This was missing before!
+  date: string;
+};
 
 const Admin = () => {
   const [view, setView] = useState<'login' | 'forgot' | 'reset' | 'dashboard'>('login');
@@ -18,14 +30,14 @@ const Admin = () => {
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   
-  // Data
+  // Data - Typed correctly now
   const [activeTab, setActiveTab] = useState("overview");
-  const [volunteers, setVolunteers] = useState<any[]>([]);
+  const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
   const [admins, setAdmins] = useState<any[]>([]);
 
-  // Newsletter with OTP
+  // Newsletter
   const [newsSubject, setNewsSubject] = useState("");
   const [newsMessage, setNewsMessage] = useState("");
   const [otp, setOtp] = useState("");
@@ -40,7 +52,7 @@ const Admin = () => {
     setView('login');
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: FormEvent) => { // Using FormEvent directly
     e.preventDefault();
     try {
       const res = await fetch("https://heartofhopeserver1.onrender.com/auth/login", {
@@ -68,8 +80,7 @@ const Admin = () => {
     setView('dashboard');
   };
 
-  // --- NEWSLETTER LOGIC ---
-  const requestApproval = async (e: React.FormEvent) => {
+  const requestApproval = async (e: FormEvent) => {
     e.preventDefault();
     setIsSending(true);
     try {
@@ -103,8 +114,7 @@ const Admin = () => {
     finally { setIsSending(false); }
   };
 
-  // --- ADMIN MANAGEMENT ---
-  const handleAddAdmin = async (e: React.FormEvent) => {
+  const handleAddAdmin = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch("https://heartofhopeserver1.onrender.com/admin/add-user", {
@@ -133,7 +143,7 @@ const Admin = () => {
     } catch (err) { toast.error("Error deleting"); }
   };
 
-  const requestReset = async (e: React.FormEvent) => {
+  const requestReset = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch("https://heartofhopeserver1.onrender.com/auth/forgot-password", { 
@@ -147,7 +157,7 @@ const Admin = () => {
     } catch (err) { toast.error("Account not found"); }
   };
 
-  const confirmReset = async (e: React.FormEvent) => {
+  const confirmReset = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch("https://heartofhopeserver1.onrender.com/auth/reset-password", {
@@ -303,9 +313,38 @@ const Admin = () => {
           </div>
         )}
 
-        {/* Other tabs logic remains similar (mapping lists) */}
-        {activeTab === 'volunteers' && <div className="bg-white rounded-xl border">{volunteers.map(v => <div key={v._id} className="p-4 border-b last:border-0"><b>{v.firstName} {v.lastName}</b><p className="text-sm">{v.email} | {v.skills}</p></div>)}</div>}
-        {activeTab === 'messages' && <div className="space-y-4">{messages.map(m => <div key={m._id} className="bg-white p-6 rounded-xl border"><b>{m.subject}</b><p className="text-sm text-muted-foreground">From: {m.email}</p><p className="mt-2">{m.message}</p></div>)}</div>}
+        {activeTab === 'volunteers' && (
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold">Volunteers</h1>
+            {volunteers.map(v => (
+              <div key={v._id} className="bg-white p-4 rounded-xl shadow border">
+                <div className="flex justify-between">
+                  <span className="font-bold">{v.firstName} {v.lastName}</span>
+                  <span className="text-sm text-muted-foreground">{new Date(v.date).toLocaleDateString()}</span>
+                </div>
+                <div className="text-sm mt-1">{v.email} | {v.phone}</div>
+                <div className="text-sm text-muted-foreground mt-2"><strong>Skills:</strong> {v.skills}</div>
+                <div className="text-sm text-muted-foreground"><strong>Availability:</strong> {v.availability}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {activeTab === 'messages' && (
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold">Inbox</h1>
+            {messages.map(m => (
+              <div key={m._id} className="bg-white p-6 rounded-xl shadow border">
+                <div className="flex justify-between mb-2">
+                  <h3 className="font-bold">{m.subject}</h3>
+                  <span className="text-sm text-muted-foreground">{new Date(m.date).toLocaleDateString()}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">From: {m.firstName} {m.lastName} ({m.email})</p>
+                <div className="bg-slate-50 p-4 rounded text-slate-700">{m.message}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
